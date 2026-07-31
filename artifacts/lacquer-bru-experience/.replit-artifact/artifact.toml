@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/"
+title = "Lacquer Bru | Experience Engine"
+version = "1.0.0"
+id = "artifacts/lacquer-bru-experience"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23831
+
+[services.development]
+run = "pnpm --filter @workspace/lacquer-bru-experience run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/lacquer-bru-experience", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/lacquer-bru-experience/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23831"
+BASE_PATH = "/"
