@@ -1,0 +1,67 @@
+experience-engine/
+│
+├── index.html
+│
+├── css/
+│   ├── engine.css
+│   ├── layout.css
+│   └── blueprint.css
+│
+├── js/
+│   ├── main.js
+│   │
+│   ├── core/
+│   │   ├── Scene.js
+│   │   ├── Camera.js
+│   │   ├── Renderer.js
+│   │   └── AnimationLoop.js
+│   │
+│   ├── interaction/
+│   │   ├── MouseController.js
+│   │   ├── ScrollController.js
+│   │   └── StateMachine.js
+│   │
+│   ├── objects/
+│   │   ├── SprayCan.js
+│   │   └── Components.js
+│   │
+│   ├── animation/
+│   │   ├── Hover.js
+│   │   ├── Explosion.js
+│   │   └── Timeline.js
+│   │
+│   └── ui/
+│       └── Navigation.js
+│
+├── textures/
+│
+├── models/
+│
+└── shaders/
+
+________________________________________
+
+Sprint 1
+
+experience-engine/
+
+index.html
+css/
+    engine.css
+    layout.css
+
+js/
+    main.js
+
+    core/
+        Scene.js
+        Camera.js
+        Renderer.js
+        AnimationLoop.js
+
+    interaction/
+        MouseController.js
+        StateMachine.js
+
+    objects/
+        SprayCan.js

@@ -1,0 +1,290 @@
+/*============================================================
+
+LACQUER BRU EXPERIENCE ENGINE
+
+engine.css
+
+Version: 0.1
+
+Purpose
+
+Engine specific styling.
+
+Contains:
+
+• Engine States
+• Canvas States
+• Loading States
+• Fade Transitions
+• Utility Classes
+
+NO Blueprint Styling
+NO Navigation Styling
+NO Component Styling
+
+============================================================*/
+
+
+/*============================================================
+
+ENGINE ROOT
+
+============================================================*/
+
+#experience-engine {
+
+    isolation: isolate;
+
+    contain: layout style paint;
+
+}
+
+
+/*============================================================
+
+ENGINE STATES
+
+============================================================*/
+
+#experience-engine.is-loading {
+
+    cursor: progress;
+
+}
+
+#experience-engine.is-ready {
+
+    cursor: grab;
+
+}
+
+#experience-engine.is-dragging {
+
+    cursor: grabbing;
+
+}
+
+#experience-engine.is-hover {
+
+    cursor: pointer;
+
+}
+
+
+/*============================================================
+
+CANVAS
+
+============================================================*/
+
+#engine-canvas {
+
+    opacity: 0;
+
+    transition:
+
+        opacity 1.2s ease,
+
+        filter .6s ease;
+
+    image-rendering: auto;
+
+}
+
+#experience-engine.is-ready #engine-canvas {
+
+    opacity: 1;
+
+}
+
+
+/*============================================================
+
+LOADING OVERLAY
+
+============================================================*/
+
+#loading {
+
+    opacity: 1;
+
+    transform:
+
+        translateX(-50%)
+
+        translateY(0);
+
+    transition:
+
+        opacity .8s ease,
+
+        transform .8s ease;
+
+}
+
+#experience-engine.is-ready #loading {
+
+    opacity: 0;
+
+    transform:
+
+        translateX(-50%)
+
+        translateY(8px);
+
+}
+
+
+/*============================================================
+
+WORDMARK
+
+============================================================*/
+
+#wordmark {
+
+    opacity: 0;
+
+    transition:
+
+        opacity 1s ease;
+
+}
+
+#experience-engine.is-ready #wordmark {
+
+    opacity: 1;
+
+}
+
+
+/*============================================================
+
+ENGINE FADE
+
+============================================================*/
+
+.engine-fade-in {
+
+    animation:
+
+        engineFadeIn
+
+        900ms
+
+        ease
+
+        forwards;
+
+}
+
+@keyframes engineFadeIn {
+
+    from {
+
+        opacity: 0;
+
+    }
+
+    to {
+
+        opacity: 1;
+
+    }
+
+}
+
+
+/*============================================================
+
+ENGINE SCALE
+
+============================================================*/
+
+.engine-scale-in {
+
+    animation:
+
+        engineScaleIn
+
+        1.2s
+
+        cubic-bezier(.2,.9,.2,1)
+
+        forwards;
+
+}
+
+@keyframes engineScaleIn {
+
+    from {
+
+        opacity: 0;
+
+        transform: scale(.96);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform: scale(1);
+
+    }
+
+}
+
+
+/*============================================================
+
+SOFT GLOW
+
+Future Soul System
+
+============================================================*/
+
+.engine-glow {
+
+    filter:
+
+        drop-shadow(0 0 12px rgba(121,217,255,.18))
+
+        drop-shadow(0 0 36px rgba(121,217,255,.10));
+
+}
+
+
+/*============================================================
+
+CAN HOVER
+
+Future Hover State
+
+============================================================*/
+
+.engine-hover {
+
+    transition:
+
+        transform .45s ease,
+
+        filter .45s ease;
+
+/*============================================================
+
+REDUCED MOTION
+
+============================================================*/
+
+@media (prefers-reduced-motion: reduce) {
+
+    * {
+
+        animation: none !important;
+
+        transition: none !important;
+
+    }
+
+}

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Lacquer Bru | Experience Engine</title>
+
+    <meta name="description"
+          content="Lacquer Bru Experience Engine Development">
+
+    <!-- CSS -->
+
+    <link rel="stylesheet"
+          href="css/layout.css">
+
+    <link rel="stylesheet"
+          href="css/engine.css">
+
+    <!-- Google Fonts -->
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@300;400;500;700&display=swap"
+          rel="stylesheet">
+
+</head>
+
+<body>
+
+    <!-- ==========================================================
+         EXPERIENCE ENGINE
+    =========================================================== -->
+
+    <main id="experience-engine">
+
+        <!-- ThreeJS Canvas -->
+
+        <canvas id="engine-canvas"></canvas>
+
+        <!-- Overlay Interface -->
+
+        <div id="engine-ui">
+
+            <div id="wordmark">
+
+                Lacquer Bru
+
+            </div>
+
+            <div id="loading">
+
+                EXPERIENCE ENGINE v0.1
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- ==========================================================
+         THREE JS
+    =========================================================== -->
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.179.1/build/three.module.js"
+        }
+    }
+    </script>
+
+    <!-- ==========================================================
+         ENGINE ENTRY POINT
+    =========================================================== -->
+
+    <script type="module"
+            src="js/main.js"></script>
+
+</body>
+
+</html>
