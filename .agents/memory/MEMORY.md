@@ -1,0 +1,1 @@
+- [Lacquer Bru Experience Engine](lacquer-bru-project.md) — Scroll-driven Three.js spray can explosion for Lacquer Bru brand; all geometry is JS primitives, no external models.
