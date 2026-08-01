@@ -442,6 +442,27 @@ export default class ExperienceEngine {
 
         );
 
+        /*------------------------------------------------------
+        BEGIN button — triggers autoplay
+        ------------------------------------------------------*/
+
+        const beginBtn =
+            this.container.querySelector('#begin-btn');
+
+        if (beginBtn) {
+
+            beginBtn.addEventListener('click', () => {
+
+                if (this.interactionController) {
+
+                    this.interactionController.onCTA();
+
+                }
+
+            });
+
+        }
+
     }
 
     /*=========================================================
