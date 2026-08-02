@@ -56,11 +56,13 @@ export default class RendererManager {
 
     createRenderer() {
 
+        this.isMobile = window.matchMedia("(max-width: 900px), (pointer: coarse)").matches;
+
         this.renderer = new THREE.WebGLRenderer({
 
             canvas: this.canvas,
 
-            antialias: true,
+            antialias: !this.isMobile,
 
             alpha: true,
 
@@ -108,7 +110,7 @@ export default class RendererManager {
 
                 window.devicePixelRatio,
 
-                2
+                this.isMobile ? 1.25 : 2
 
             )
 
@@ -170,6 +172,8 @@ export default class RendererManager {
 
     resize() {
 
+        this.isMobile = window.matchMedia("(max-width: 900px), (pointer: coarse)").matches;
+
         this.renderer.setSize(
 
             window.innerWidth,
@@ -184,7 +188,7 @@ export default class RendererManager {
 
                 window.devicePixelRatio,
 
-                2
+                this.isMobile ? 1.25 : 2
 
             )
 

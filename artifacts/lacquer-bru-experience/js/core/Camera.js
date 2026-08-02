@@ -194,6 +194,14 @@ export default class CameraManager {
 
     resize() {
 
+        const isMobile = window.matchMedia("(max-width: 900px)").matches;
+
+        this.camera.fov = isMobile ? 34 : 28;
+
+        this.camera.position.z = isMobile ? 7.7 : 7.0;
+
+        this.target.y = isMobile ? -0.05 : -0.15;
+
         this.camera.aspect =
 
             window.innerWidth /

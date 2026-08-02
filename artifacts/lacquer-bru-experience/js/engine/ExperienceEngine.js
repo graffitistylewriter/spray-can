@@ -57,6 +57,8 @@ import MouseController from "../core/MouseController.js";
 import ExplosionSystem from "../systems/ExplosionSystem.js";
 import LightingSystem from "../systems/LightingSystem.js";
 import EnvironmentSystem from "../systems/EnvironmentSystem.js";
+import SoulSystem from "../systems/SoulSystem.js";
+import WorldNavigationSystem from "../systems/WorldNavigationSystem.js";
 import AssemblyAnimator from "../core/AssemblyAnimator.js";
 
 export default class ExperienceEngine {
@@ -362,16 +364,42 @@ export default class ExperienceEngine {
 
         );
 
+        this.soulSystem = new SoulSystem(
+
+            this.sprayCan,
+
+            this.revealDirector,
+
+            this.lightingSystem
+
+        );
+
+        this.systemManager.register(
+
+            this.soulSystem
+
+        );
+
+        this.worldNavigationSystem = new WorldNavigationSystem(
+
+            this,
+
+            this.revealDirector
+
+        );
+
+        this.systemManager.register(
+
+            this.worldNavigationSystem
+
+        );
+
         //----------------------------------------
         // Future Systems
         //----------------------------------------
 
         /*
             BlueprintSystem
-
-            NavigationSystem
-
-            SoulSystem
         */
 
     }
@@ -458,6 +486,21 @@ export default class ExperienceEngine {
                     this.interactionController.onCTA();
 
                 }
+
+            });
+
+        }
+
+        const replayBtn =
+            this.container.querySelector('#replay-btn');
+
+        if (replayBtn) {
+
+            replayBtn.addEventListener('click', () => {
+
+                this.interactionController?.reset();
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
 
             });
 

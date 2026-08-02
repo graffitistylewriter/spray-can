@@ -25,9 +25,12 @@ export default class MouseController {
 
         this.engine = engine;
 
-        this.mouse = new THREE.Vector2();
         this.target = new THREE.Vector2();
         this.current = new THREE.Vector2();
+
+        this.isDragging = false;
+        this.startPointer = new THREE.Vector2();
+        this.startRotation = new THREE.Vector2();
 
         this.enabled = true;
 
@@ -35,9 +38,8 @@ export default class MouseController {
         Settings
         ------------------------------------------------------*/
 
-        this.rotationAmount = 0.35;
-        this.parallaxAmount = 0.06;
-        this.damping = 0.08;
+        this.rotationAmount = 0.005;
+        this.damping = 0.1;
 
         this.bindEvents();
 
@@ -49,21 +51,15 @@ export default class MouseController {
 
     bindEvents() {
 
-        window.addEventListener(
+        this.canvas = this.engine.container.querySelector("#engine-canvas");
 
-            "mousemove",
+        this.canvas?.addEventListener("pointerdown", this.onPointerDown);
 
-            this.onMouseMove
+        window.addEventListener("pointermove", this.onPointerMove);
 
-        );
+        window.addEventListener("pointerup", this.onPointerUp);
 
-        window.addEventListener(
-
-            "click",
-
-            this.onClick
-
-        );
+        window.addEventListener("pointercancel", this.onPointerUp);
 
     }
 
@@ -71,15 +67,19 @@ export default class MouseController {
         Mouse Move
     =========================================================*/
 
-    onMouseMove = (event) => {
+    onPointerDown = (event) => {
 
-        this.target.x =
+        if (event.button !== 0 || event.pointerType === "touch") return;
 
-            (event.clientX / window.innerWidth) * 2 - 1;
+        this.isDragging = true;
 
-        this.target.y =
+        this.startPointer.set(event.clientX, event.clientY);
 
-            -(event.clientY / window.innerHeight) * 2 + 1;
+        this.startRotation.copy(this.target);
+
+        this.canvas?.setPointerCapture?.(event.pointerId);
+
+        this.engine.container.classList.add("is-dragging");
 
     }
 
@@ -87,19 +87,43 @@ export default class MouseController {
         CLICK
     =========================================================*/
 
-    onClick = () => {
+    onPointerMove = (event) => {
 
-        if (
+        if (!this.isDragging) return;
 
-            this.engine.interactionController
+        const x = event.clientX - this.startPointer.x;
 
-        ) {
+        const y = event.clientY - this.startPointer.y;
 
-            this.engine.interactionController.onClick();
+        this.target.x = THREE.MathUtils.clamp(
+
+            this.startRotation.x - y * this.rotationAmount,
+
+            -0.42,
+
+            0.42
+
+        );
+
+        this.target.y = this.startRotation.y + x * this.rotationAmount;
+
+    }
+
+    onPointerUp = (event) => {
+
+        if (!this.isDragging) return;
+
+        this.isDragging = false;
+
+        if (this.canvas?.hasPointerCapture?.(event.pointerId)) {
+
+            this.canvas.releasePointerCapture(event.pointerId);
 
         }
 
-    }  
+        this.engine.container.classList.remove("is-dragging");
+
+    }
 
     /*=========================================================
         Update
@@ -117,7 +141,7 @@ export default class MouseController {
 
         );
 
-        const can = this.engine.sprayCan.root;
+        const can = this.engine.sprayCan.parts.interaction;
 
         if (!can) return;
 
@@ -125,49 +149,9 @@ export default class MouseController {
         // Rotation
         //----------------------------------------
 
-        can.rotation.x += (
+        can.rotation.x = this.current.x;
 
-            this.current.y *
-
-            this.rotationAmount -
-
-            can.rotation.x
-
-        ) * 0.08;
-
-        can.rotation.z += (
-
-            -this.current.x *
-
-            this.rotationAmount -
-
-            can.rotation.z
-
-        ) * 0.08;
-
-        //----------------------------------------
-        // Position Parallax
-        //----------------------------------------
-
-        can.position.x += (
-
-            this.current.x *
-
-            this.parallaxAmount -
-
-            can.position.x
-
-        ) * 0.05;
-
-        can.position.y += (
-
-            this.current.y *
-
-            this.parallaxAmount -
-
-            can.position.y
-
-        ) * 0.05;
+        can.rotation.y = this.current.y;
 
     }
 
@@ -177,21 +161,13 @@ export default class MouseController {
 
     destroy() {
 
-        window.removeEventListener(
+        this.canvas?.removeEventListener("pointerdown", this.onPointerDown);
 
-            "mousemove",
+        window.removeEventListener("pointermove", this.onPointerMove);
 
-            this.onMouseMove
+        window.removeEventListener("pointerup", this.onPointerUp);
 
-        );
-
-        window.removeEventListener(
-
-            "click",
-
-            this.onClick
-
-        );
+        window.removeEventListener("pointercancel", this.onPointerUp);
 
     }
 

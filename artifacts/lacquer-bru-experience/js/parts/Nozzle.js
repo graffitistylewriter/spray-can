@@ -20,8 +20,6 @@ Responsibilities
 
 import * as THREE from "three";
 
-import CanDimensions from "../config/CanDimensions.js";
-
 export default class Nozzle {
 
     constructor(materials) {
@@ -47,14 +45,29 @@ export default class Nozzle {
         ---------------------------------------------------------
         */
 
-        const bodyGeometry = new THREE.CylinderGeometry(
+        const bodyProfile = [
 
-            0.095,
-            0.105,
-            CanDimensions.NOZZLE_HEIGHT,
-            64
+            new THREE.Vector2(0.000, -0.050),
 
-        );
+            new THREE.Vector2(0.034, -0.050),
+
+            new THREE.Vector2(0.052, -0.042),
+
+            new THREE.Vector2(0.076, -0.026),
+
+            new THREE.Vector2(0.076, -0.002),
+
+            new THREE.Vector2(0.058, 0.010),
+
+            new THREE.Vector2(0.052, 0.060),
+
+            new THREE.Vector2(0.046, 0.072),
+
+            new THREE.Vector2(0.000, 0.072)
+
+        ];
+
+        const bodyGeometry = new THREE.LatheGeometry(bodyProfile, 64);
 
         const body = new THREE.Mesh(
 
@@ -71,46 +84,34 @@ export default class Nozzle {
 
         this.group.add(body);
 
-        /*
-        ---------------------------------------------------------
-        Finger Cap
-        ---------------------------------------------------------
-        */
+        const fingerPadGeometry = new THREE.CylinderGeometry(
 
-        const capGeometry = new THREE.SphereGeometry(
+            0.052,
 
-            0.105,
+            0.052,
 
-            64,
+            0.012,
 
-            32,
-
-            0,
-
-            Math.PI * 2,
-
-            0,
-
-            Math.PI * 0.45
+            48
 
         );
 
-        const cap = new THREE.Mesh(
+        const fingerPad = new THREE.Mesh(
 
-            capGeometry,
+            fingerPadGeometry,
 
-            this.materials.plastic
+            this.materials.rubber
 
         );
 
-        cap.position.y =
+        fingerPad.position.y = 0.072;
 
-            CanDimensions.NOZZLE_HEIGHT * 0.5;
+        fingerPad.scale.z = 0.75;
 
-        cap.castShadow = true;
-        cap.receiveShadow = true;
+        fingerPad.castShadow = true;
+        fingerPad.receiveShadow = true;
 
-        this.group.add(cap);
+        this.group.add(fingerPad);
 
         /*
         ---------------------------------------------------------
@@ -138,9 +139,7 @@ export default class Nozzle {
 
         );
 
-        socket.position.y =
-
-            -CanDimensions.NOZZLE_HEIGHT * 0.5;
+        socket.position.y = -0.060;
 
         socket.castShadow = true;
         socket.receiveShadow = true;
@@ -175,20 +174,24 @@ export default class Nozzle {
 
         hole.rotation.x = Math.PI / 2;
 
-        hole.position.set(
-
-            0,
-
-            0.018,
-
-            0.097
-
-        );
+        hole.position.set(0, 0.020, 0.078);
 
         hole.castShadow = true;
         hole.receiveShadow = true;
 
         this.group.add(hole);
+
+        const directionDot = new THREE.Mesh(
+
+            new THREE.CircleGeometry(0.018, 32),
+
+            this.materials.soulDot
+
+        );
+
+        directionDot.position.set(0, 0.020, 0.085);
+
+        this.group.add(directionDot);
 
     }
 

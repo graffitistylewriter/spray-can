@@ -215,6 +215,20 @@ export default class InteractionController {
 
     }
 
+    reset() {
+
+        this.autoplaying = false;
+
+        this.autoplayElapsed = 0;
+
+        this.hasStarted = false;
+
+        this.engine.revealDirector.setProgress(0);
+
+        this.engine.container?.classList.remove("is-playing");
+
+    }
+
     /*=========================================================
         ENABLE / DISABLE
     =========================================================*/

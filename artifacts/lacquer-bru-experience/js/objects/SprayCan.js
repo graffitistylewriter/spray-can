@@ -227,6 +227,8 @@ export default class SprayCan extends EngineObject {
 
         this.parts = {
 
+            interaction: new THREE.Group(),
+
             shell: new THREE.Group(),
 
             body: new THREE.Group(),
@@ -237,6 +239,8 @@ export default class SprayCan extends EngineObject {
 
         };
 
+        this.parts.interaction.name = "InteractionPivot";
+
         this.parts.shell.name = "Shell";
 
         this.parts.body.name = "Body";
@@ -246,6 +250,12 @@ export default class SprayCan extends EngineObject {
         this.parts.internal.name = "InternalAssembly";
 
         this.root.add(
+
+            this.parts.interaction
+
+        );
+
+        this.parts.interaction.add(
 
             this.parts.shell
 
@@ -293,19 +303,19 @@ export default class SprayCan extends EngineObject {
 
         this.anchors.camera.name = "CameraAnchor";
 
-        this.root.add(
+        this.parts.interaction.add(
 
             this.anchors.soul
 
         );
 
-        this.root.add(
+        this.parts.interaction.add(
 
             this.anchors.blueprint
 
         );
 
-        this.root.add(
+        this.parts.interaction.add(
 
             this.anchors.camera
 

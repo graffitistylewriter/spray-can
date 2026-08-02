@@ -115,6 +115,8 @@ drives window.scrollY → RevealDirector progress.
 
     height: 100vh;
 
+    height: 100dvh;
+
     overflow: hidden;
 
     background:
@@ -170,6 +172,8 @@ THREEJS CANVAS
 
     z-index: 1;
 
+    touch-action: pan-y;
+
 }
 
 
@@ -223,6 +227,79 @@ WORDMARK
 
 /*============================================================
 
+WELCOME COPY
+
+============================================================*/
+
+#welcome-copy {
+
+    position: absolute;
+
+    top: 50%;
+
+    left: 38px;
+
+    width: min(235px, 22vw);
+
+    transform: translateY(-42%);
+
+    color: rgba(255,255,255,.9);
+
+    user-select: none;
+
+}
+
+.eyebrow {
+
+    margin-bottom: 18px;
+
+    color: var(--cyan);
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: .28em;
+
+    text-transform: uppercase;
+
+}
+
+#welcome-copy h1 {
+
+    margin: 0;
+
+    font-family: var(--font-display);
+
+    font-size: clamp(20px, 2vw, 34px);
+
+    font-weight: 400;
+
+    line-height: 1.18;
+
+    letter-spacing: .12em;
+
+}
+
+.welcome-description {
+
+    margin-top: 20px;
+
+    color: rgba(255,255,255,.48);
+
+    font-size: 9px;
+
+    line-height: 1.8;
+
+    letter-spacing: .16em;
+
+    text-transform: uppercase;
+
+}
+
+
+/*============================================================
+
 LOADING / SCROLL HINT LABEL
 
 ============================================================*/
@@ -258,6 +335,12 @@ RESPONSIVE
 
 @media (max-width: 900px) {
 
+    #scroll-spacer {
+
+        height: 600svh;
+
+    }
+
     #wordmark {
 
         top: 24px;
@@ -265,6 +348,32 @@ RESPONSIVE
         left: 24px;
 
         font-size: 10px;
+
+    }
+
+    #welcome-copy {
+
+        top: auto;
+
+        bottom: 42px;
+
+        left: 24px;
+
+        width: 180px;
+
+        transform: none;
+
+    }
+
+    #welcome-copy h1 {
+
+        font-size: 18px;
+
+    }
+
+    .welcome-description {
+
+        display: none;
 
     }
 

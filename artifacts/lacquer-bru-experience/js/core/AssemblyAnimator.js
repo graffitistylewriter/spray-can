@@ -1,25 +1,44 @@
-/****************************************************************
+import * as THREE from "three";
 
-LACQUER BRU
-EXPERIENCE ENGINE
+const clampPhase = (progress, start, end) => {
 
-AssemblyAnimator.js
+    const normalized = THREE.MathUtils.clamp(
 
-Version 2.0
+        (progress - start) / (end - start),
 
-Master Assembly Animator
+        0,
 
-Responsibilities
+        1
 
-• Animate Assemblies
-• Read Reveal Stages
-• Apply Motion Profiles
-• Coordinate Mechanical Reveal
+    );
 
-****************************************************************/
+    return normalized * normalized * (3 - 2 * normalized);
 
-import MotionProfile from "./MotionProfile.js";
-import Stage from "./Stage.js";
+};
+
+const setTransform = (object, amount, position, rotation) => {
+
+    object.position.set(
+
+        position.x * amount,
+
+        position.y * amount,
+
+        position.z * amount
+
+    );
+
+    object.rotation.set(
+
+        rotation.x * amount,
+
+        rotation.y * amount,
+
+        rotation.z * amount
+
+    );
+
+};
 
 export default class AssemblyAnimator {
 
@@ -31,119 +50,153 @@ export default class AssemblyAnimator {
 
     }
 
-    /*=========================================================
-        UPDATE
-    =========================================================*/
+    update() {
 
-    update(delta) {
+        if (!this.sprayCan || !this.revealDirector) return;
 
-        if (!this.sprayCan) return;
+        const progress = this.revealDirector.getProgress();
 
-        switch (this.revealDirector.getStage()) {
+        const prepare = clampPhase(progress, 0.08, 0.22);
 
-            case Stage.LIFT:
+        const release = clampPhase(progress, 0.18, 0.62);
 
-                this.animateLift(delta);
+        const internals = clampPhase(progress, 0.40, 0.76);
 
-                break;
+        const finalise = clampPhase(progress, 0.62, 0.92);
 
-            case Stage.SHOULDER_REVEAL:
+        const parts = this.sprayCan;
 
-                this.animateShoulder(delta);
+        parts.parts.interaction.position.y = 0.14 * prepare;
 
-                break;
+        const body = parts.bodyAssembly.parts;
 
-            case Stage.VALVE_REVEAL:
+        setTransform(
 
-                this.animateValve(delta);
+            body.shell,
 
-                break;
+            release,
 
-            case Stage.INTERNAL_REVEAL:
+            { x: -0.18, y: -0.26, z: 0.02 },
 
-                this.animateInternals(delta);
+            { x: -0.08, y: 0.10, z: 0.24 }
 
-                break;
+        );
 
-        }
+        setTransform(
 
-    }
+            body.sleeve,
 
-    /*=========================================================
-        HERO LIFT
-    =========================================================*/
+            release,
 
-    animateLift(delta) {
+            { x: -0.18, y: -0.26, z: 0.02 },
 
-        const root = this.sprayCan.root;
+            { x: -0.08, y: 0.10, z: 0.24 }
 
-        root.position.y += (
+        );
 
-            MotionProfile.LIFT.distance -
+        setTransform(
 
-            root.position.y
+            body.bottomRing,
 
-        ) * delta * 2.0;
+            finalise,
 
-    }
+            { x: 0.52, y: -0.18, z: 0.08 },
 
-    /*=========================================================
-        SHOULDER
-    =========================================================*/
+            { x: 0.38, y: -0.20, z: -0.42 }
 
-    animateShoulder(delta) {
+        );
 
-        const top =
+        setTransform(
 
-            this.sprayCan.parts.topAssembly;
+            body.bottomCap,
 
-        top.position.y += (
+            finalise,
 
-            MotionProfile.SHOULDER.distance -
+            { x: 0.56, y: -0.22, z: 0.12 },
 
-            top.position.y
+            { x: 0.46, y: 0.28, z: -0.46 }
 
-        ) * delta * 2.5;
+        );
 
-    }
+        const top = parts.topAssembly.parts;
 
-    /*=========================================================
-        VALVE
-    =========================================================*/
+        setTransform(
 
-    animateValve(delta) {
+            top.shoulder,
 
-        const top =
+            release,
 
-            this.sprayCan.parts.topAssembly;
+            { x: 0.06, y: 0.42, z: 0.01 },
 
-        top.position.y += (
+            { x: 0.12, y: -0.16, z: -0.12 }
 
-            MotionProfile.VALVE.distance -
+        );
 
-            top.position.y
+        setTransform(
 
-        ) * delta * 2.5;
+            top.valveCup,
 
-    }
+            clampPhase(progress, 0.28, 0.68),
 
-    /*=========================================================
-        INTERNAL
-    =========================================================*/
+            { x: 0.12, y: 0.76, z: 0.02 },
 
-    animateInternals(delta) {
+            { x: 0.16, y: 0.18, z: -0.16 }
 
-        const internal =
+        );
 
-            this.sprayCan.parts.internal;
+        setTransform(
 
-        internal.position.y += (
+            top.valveStem,
 
-            MotionProfile.INTERNAL.distance -
+            clampPhase(progress, 0.34, 0.72),
 
-            internal.position.y
+            { x: 0.18, y: 1.02, z: 0.04 },
 
-        ) * delta * 2.0;
+            { x: 0.22, y: 0.22, z: -0.18 }
+
+        );
+
+        const nozzleRelease = clampPhase(progress, 0.40, 0.78);
+
+        setTransform(
+
+            top.nozzle,
+
+            nozzleRelease,
+
+            { x: 0.28, y: 1.34, z: 0.10 },
+
+            { x: 0.34, y: Math.PI * 2.5, z: -0.32 }
+
+        );
+
+        const internalsParts = parts.internalAssembly.parts;
+
+        setTransform(
+
+            internalsParts.dipTube,
+
+            internals,
+
+            { x: 0.62, y: -0.12, z: 0.12 },
+
+            { x: 0.08, y: -0.22, z: 0.52 }
+
+        );
+
+        setTransform(
+
+            internalsParts.marble,
+
+            clampPhase(progress, 0.48, 0.82),
+
+            { x: 0.58, y: 0.36, z: 0.16 },
+
+            { x: Math.PI * 1.5, y: Math.PI * 2.0, z: Math.PI }
+
+        );
+
+        internalsParts.paint.scale.setScalar(1 - finalise * 0.16);
 
     }
 
