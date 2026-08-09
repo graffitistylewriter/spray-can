@@ -1,0 +1,7 @@
+﻿packages:
+  - "experience-engine"
+  - "lib/**"
+  - "scripts"
+
+allowBuilds:
+  esbuild: true

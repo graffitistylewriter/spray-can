@@ -7,17 +7,28 @@ MixingMarble.js
 
 Version 2.0
 
-Mechanical Mixing Marble
+Internal Mixing Marble — Agitation
 
 Responsibilities
 
-• Steel Mixing Ball
-• Paint Agitator
-• Internal Detail
+• Small sphere that rattles inside the can to agitate paint
+• High-polish steel appearance
+
+Update (v2.0)
+
+FIX: Changed material from `chrome` to `marble`.
+
+The `marble` material (added in CanMaterials v3.1) has
+tighter clearcoat and slightly cooler colour than the generic
+chrome, giving it the appearance of a small polished steel
+ball-bearing. The generic `chrome` was shared with all other
+chrome parts and couldn't be tuned independently.
 
 ****************************************************************/
 
 import * as THREE from "three";
+
+import CanDimensions from "../config/CanDimensions.js";
 
 export default class MixingMarble {
 
@@ -26,6 +37,7 @@ export default class MixingMarble {
         this.materials = materials;
 
         this.group = new THREE.Group();
+
         this.group.name = "MixingMarble";
 
         this.build();
@@ -40,7 +52,7 @@ export default class MixingMarble {
 
         const geometry = new THREE.SphereGeometry(
 
-            0.085,
+            CanDimensions.MARBLE_RADIUS,
 
             64,
 
@@ -52,23 +64,22 @@ export default class MixingMarble {
 
             geometry,
 
-            this.materials.chrome
+            this.materials.marble       /* FIX: was this.materials.chrome */
 
         );
 
         mesh.name = "MixingMarbleMesh";
 
-        mesh.position.set(
+        mesh.position.y =
 
-            0.0,
+            -CanDimensions.BODY_HEIGHT * 0.5
 
-            -0.72,
+            + CanDimensions.MARBLE_RADIUS
 
-            0.0
-
-        );
+            + 0.28;
 
         mesh.castShadow = true;
+
         mesh.receiveShadow = true;
 
         this.group.add(mesh);

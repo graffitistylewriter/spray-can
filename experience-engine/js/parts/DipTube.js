@@ -5,9 +5,23 @@ EXPERIENCE ENGINE
 
 DipTube.js
 
-Version 2.1
+Version 2.0
 
-Uses Canonical Dimensions
+Internal Dip Tube — Fluid Transfer
+
+Responsibilities
+
+• Long internal tube that draws paint from the can bottom
+• Translucent acrylic material (was wrongly using plastic)
+
+Update (v2.0)
+
+FIX: Changed material from `plastic` (white opaque) to
+`dipTube` (translucent blue-tinted acrylic). The dip tube
+in the reference images and keyframes reads as a clear
+translucent acrylic tube, not white plastic. This makes it
+visible and gives it the glass-like quality seen in Fig.03
+where the tube is a highlighted component.
 
 ****************************************************************/
 
@@ -29,6 +43,10 @@ export default class DipTube {
 
     }
 
+    /*=========================================================
+        BUILD
+    =========================================================*/
+
     build() {
 
         const geometry = new THREE.CylinderGeometry(
@@ -47,19 +65,19 @@ export default class DipTube {
 
             geometry,
 
-            this.materials.plastic
+            this.materials.dipTube      /* FIX: was this.materials.plastic */
 
         );
 
         mesh.name = "DipTubeMesh";
 
-        /*
-        Tube hangs from valve
-        */
-
         mesh.position.y =
 
-            CanDimensions.DIP_TUBE_HEIGHT * 0.28;
+            CanDimensions.DIP_TUBE_HEIGHT * 0.5
+
+            - CanDimensions.BODY_HEIGHT * 0.5
+
+            + 0.09;
 
         mesh.castShadow = true;
 

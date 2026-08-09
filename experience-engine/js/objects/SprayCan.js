@@ -5,7 +5,7 @@ EXPERIENCE ENGINE
 
 SprayCan.js
 
-Version 2.0
+Version 2.1
 
 Responsibilities
 
@@ -16,8 +16,22 @@ Responsibilities
 • Create Explosion Pivots
 • Build Mechanical Assemblies
 • Assembly Registry
-• Mechanical Animation
 • Maintain State
+
+Bug Fix (v2.1)
+
+• FIX: Removed the internal AssemblyAnimator creation from
+  this constructor. It was constructed without a revealDirector
+  argument, causing `this.revealDirector.getStage()` to throw
+  TypeError: Cannot read properties of undefined on every
+  frame. The canonical AssemblyAnimator is created in
+  ExperienceEngine.createObjects() with the correct wiring
+  (sprayCan + revealDirector) and updated by AnimationLoop.
+
+• FIX: Removed the broken `this.animator.update()` call from
+  update(). The call passed an extra stage argument that
+  AssemblyAnimator.update() does not accept, and would have
+  crashed immediately after the constructor fix above.
 
 ****************************************************************/
 
@@ -30,8 +44,6 @@ import CanMaterials from "../materials/CanMaterials.js";
 import BodyAssembly from "../assemblies/BodyAssembly.js";
 import TopAssembly from "../assemblies/TopAssembly.js";
 import InternalAssembly from "../assemblies/InternalAssembly.js";
-
-import AssemblyAnimator from "../core/AssemblyAnimator.js";
 
 export default class SprayCan extends EngineObject {
 
@@ -66,16 +78,6 @@ export default class SprayCan extends EngineObject {
         this.buildAssemblies();
 
         this.createAssemblyRegistry();
-
-        /*------------------------------------------------------
-        Mechanical Animation
-        ------------------------------------------------------*/
-
-        this.animator = new AssemblyAnimator(
-
-            this
-
-        );
 
         /*------------------------------------------------------
         Shared State
@@ -310,7 +312,8 @@ export default class SprayCan extends EngineObject {
         );
 
     }
-        /*=========================================================
+
+    /*=========================================================
         PIVOTS
     =========================================================*/
 
@@ -350,42 +353,25 @@ export default class SprayCan extends EngineObject {
 
     /*=========================================================
         UPDATE
+
+        Animation is handled by dedicated systems/animators:
+
+        • Hover animation    → HoverSystem
+        • Explosion reveal   → ExplosionSystem (body separation)
+        • Assembly staging   → AssemblyAnimator (top + internals)
+        • Soul behaviour     → SoulSystem (future)
+        • Blueprint          → BlueprintSystem (future)
+        • Navigation         → NavigationSystem (future)
+
     =========================================================*/
 
     update(delta, elapsed) {
 
         if (!this.active) return;
 
-        if (
-
-            this.animator &&
-
-            this.engine
-
-        ) {
-
-            this.animator.update(
-
-                this.engine.getStage(),
-
-                delta
-
-            );
-
-        }
-
         /*
-        Reserved for future object-level behaviour.
-
-        Hover animation is handled by HoverSystem.
-
-        Explosion animation is handled by ExplosionSystem.
-
-        Soul behaviour will be handled by SoulSystem.
-
-        Blueprint behaviour will be handled by BlueprintSystem.
-
-        Navigation behaviour will be handled by NavigationSystem.
+        SprayCan itself has no per-frame logic at this stage.
+        All motion is delegated to the system/animator layer.
         */
 
     }
@@ -397,8 +383,6 @@ export default class SprayCan extends EngineObject {
     destroy() {
 
         this.assemblies = null;
-
-        this.animator = null;
 
         this.engine = null;
 

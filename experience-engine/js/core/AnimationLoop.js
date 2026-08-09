@@ -122,6 +122,26 @@ export default class AnimationLoop {
         }
 
         //----------------------------------------
+        // Interaction Controller (autoplay driver)
+        //----------------------------------------
+
+        if (
+
+            this.engine.interactionController &&
+
+            typeof this.engine.interactionController.update === "function"
+
+        ) {
+
+            this.engine.interactionController.update(
+
+                delta
+
+            );
+
+        }
+
+        //----------------------------------------
         // Reveal Director
         //----------------------------------------
 

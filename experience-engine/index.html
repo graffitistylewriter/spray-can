@@ -16,10 +16,10 @@
     <!-- CSS -->
 
     <link rel="stylesheet"
-          href="css/layout.css">
+          href="/css/layout.css">
 
     <link rel="stylesheet"
-          href="css/engine.css">
+          href="/css/engine.css">
 
     <!-- Google Fonts -->
 
@@ -39,6 +39,7 @@
 
     <!-- ==========================================================
          EXPERIENCE ENGINE
+         Fixed viewport — scroll happens on the spacer below
     =========================================================== -->
 
     <main id="experience-engine">
@@ -57,34 +58,62 @@
 
             </div>
 
-            <div id="loading">
+            <!-- Interaction hints — visible after is-ready, hide on is-playing -->
 
-                EXPERIENCE ENGINE v0.1
+            <div id="interaction-hints">
+
+                <div id="drag-hint">
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="14" cy="14" r="12" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
+                        <circle cx="14" cy="14" r="2" fill="rgba(121,217,255,0.9)"/>
+                        <path d="M14 4 L16 8 L14 6 L12 8 Z" fill="rgba(255,255,255,0.5)"/>
+                    </svg>
+                    <span>DRAG TO ROTATE</span>
+                </div>
+
+                <div class="hint-divider"></div>
+
+                <div id="scroll-hint">
+                    <svg width="20" height="32" viewBox="0 0 20 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="1" y="1" width="18" height="26" rx="9" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
+                        <rect x="9" y="6" width="2" height="6" rx="1" fill="rgba(121,217,255,0.9)"/>
+                    </svg>
+                    <span>SCROLL TO PROGRESS</span>
+                </div>
 
             </div>
+
+            <!-- BEGIN CTA — one click auto-plays the full reveal -->
+
+            <button id="begin-btn" aria-label="Begin the reveal">
+
+                <span class="begin-label">BEGIN</span>
+
+                <span class="begin-sub">OR SCROLL TO EXPLORE</span>
+
+            </button>
 
         </div>
 
     </main>
 
     <!-- ==========================================================
-         THREE JS
+         SCROLL SPACER
+         Makes the page 500vh tall so scroll maps to the full
+         reveal animation. The fixed #experience-engine stays
+         pinned while this spacer drives window.scrollY.
     =========================================================== -->
 
-    <script type="importmap">
-    {
-        "imports": {
-            "three": "https://unpkg.com/three@0.179.1/build/three.module.js"
-        }
-    }
-    </script>
+    <div id="scroll-spacer"></div>
 
     <!-- ==========================================================
          ENGINE ENTRY POINT
+         Three.js is resolved by Vite from node_modules —
+         no import map needed.
     =========================================================== -->
 
     <script type="module"
-            src="js/main.js"></script>
+            src="/js/main.js"></script>
 
 </body>
 

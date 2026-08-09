@@ -5,16 +5,33 @@ EXPERIENCE ENGINE
 
 TopAssembly.js
 
-Version 5.0
+Version 6.0
 
 Hero Mechanical Top Assembly
 
 Responsibilities
 
-• Shoulder
+• Cap (ActuatorCap — new)
+• Shoulder (ShoulderDome — now chrome)
 • Valve Cup
 • Valve Stem
-• Nozzle
+• Nozzle (fat-cap rebuild)
+
+Update (v6.0)
+
+• Added ActuatorCap — the black protective cap with the cyan
+  soul dot. Previously missing entirely; it's the topmost
+  part visible in Fig.01 and Fig.02.
+
+• Cap is added to parts hierarchy and positioned at the top
+  of the can (y = BODY_HEIGHT/2 + CAP_HEIGHT/2).
+
+• Cap is registered in the assembly parts so AssemblyAnimator
+  and ExplosionSystem can drive it independently during the
+  stage reveal.
+
+• Nozzle position updated to sit just below the cap, matching
+  the assembled state in Fig.01.
 
 ****************************************************************/
 
@@ -23,6 +40,7 @@ import ShoulderDome from "../parts/ShoulderDome.js";
 import ValveCup from "../parts/ValveCup.js";
 import ValveStem from "../parts/ValveStem.js";
 import Nozzle from "../parts/Nozzle.js";
+import ActuatorCap from "../parts/ActuatorCap.js";
 import CanDimensions from "../config/CanDimensions.js";
 import MechanicalAnimator from "../core/MechanicalAnimator.js";
 import MotionProfile from "../core/MotionProfile.js";
@@ -51,6 +69,8 @@ export default class TopAssembly {
 
         this.parts = {
 
+            cap: new THREE.Group(),
+
             shoulder: new THREE.Group(),
 
             valveCup: new THREE.Group(),
@@ -61,6 +81,8 @@ export default class TopAssembly {
 
         };
 
+        this.parts.cap.name = "Cap";
+
         this.parts.shoulder.name = "Shoulder";
 
         this.parts.valveCup.name = "ValveCup";
@@ -68,6 +90,8 @@ export default class TopAssembly {
         this.parts.valveStem.name = "ValveStem";
 
         this.parts.nozzle.name = "Nozzle";
+
+        this.group.add(this.parts.cap);
 
         this.group.add(this.parts.shoulder);
 
@@ -85,6 +109,14 @@ export default class TopAssembly {
 
     build() {
 
+        const bodyTop =
+            CanDimensions.BODY_HEIGHT * 0.5;   // 1.05
+
+        /*------------------------------------------------------
+        Shoulder Dome
+        (now chrome — see ShoulderDome v5.0)
+        ------------------------------------------------------*/
+
         this.shoulder = new ShoulderDome(
 
             this.materials
@@ -96,6 +128,10 @@ export default class TopAssembly {
             this.shoulder.group
 
         );
+
+        /*------------------------------------------------------
+        Valve Cup
+        ------------------------------------------------------*/
 
         this.valveCup = new ValveCup(
 
@@ -109,6 +145,10 @@ export default class TopAssembly {
 
         );
 
+        /*------------------------------------------------------
+        Valve Stem
+        ------------------------------------------------------*/
+
         this.valveStem = new ValveStem(
 
             this.materials
@@ -121,6 +161,13 @@ export default class TopAssembly {
 
         );
 
+        /*------------------------------------------------------
+        Nozzle (fat-cap rebuild)
+
+        Positioned just below the cap, sitting at the top of
+        the valve stem assembly.
+        ------------------------------------------------------*/
+
         this.nozzle = new Nozzle(
 
             this.materials
@@ -129,15 +176,45 @@ export default class TopAssembly {
 
         this.nozzle.group.position.y =
 
-            CanDimensions.BODY_HEIGHT * 0.5 +
-
+            bodyTop +
             CanDimensions.VALVE_CUP_HEIGHT +
-
             CanDimensions.STEM_HEIGHT;
+
+        // = 1.05 + 0.045 + 0.135 = 1.23
 
         this.parts.nozzle.add(
 
             this.nozzle.group
+
+        );
+
+        /*------------------------------------------------------
+        Actuator Cap (new — was missing entirely)
+
+        Positioned so its base rim sits at the top of the
+        shoulder dome (y = bodyTop), extending upward.
+        ------------------------------------------------------*/
+
+        this.cap = new ActuatorCap(
+
+            this.materials
+
+        );
+
+        /*
+        Cap center y = bodyTop + CAP_HEIGHT/2
+        = 1.05 + 0.110 = 1.160
+        */
+
+        this.cap.group.position.y =
+
+            bodyTop +
+
+            CanDimensions.CAP_HEIGHT * 0.5;
+
+        this.parts.cap.add(
+
+            this.cap.group
 
         );
 

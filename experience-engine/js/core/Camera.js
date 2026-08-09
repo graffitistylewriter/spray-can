@@ -5,7 +5,7 @@ EXPERIENCE ENGINE
 
 Camera.js
 
-Version 0.1
+Version 0.2
 
 Responsibilities
 
@@ -14,6 +14,20 @@ Responsibilities
 • Mouse Parallax
 • Camera Damping
 • Camera Target
+
+Update (v0.2)
+
+• Raised camera Y from 0.25 → 0.45 to match the keyframe
+  viewing angle — slightly above centre, looking slightly
+  downward at the can, giving it the premium "stage" feel
+  seen in Fig.01 and Fig.02.
+
+• Pulled camera back from z=7.5 → z=7.0 and reduced FOV
+  from 32° → 28° for a tighter, more compressed look that
+  matches the reference images (longer lens feel).
+
+• Target shifted down from (0,0,0) → (0,-0.15,0) so the
+  can sits in the lower half of frame like the keyframes.
 
 NO Renderer
 NO Scene
@@ -29,7 +43,7 @@ export default class CameraManager {
 
         this.camera = new THREE.PerspectiveCamera(
 
-            32,
+            28,
 
             window.innerWidth / window.innerHeight,
 
@@ -40,31 +54,35 @@ export default class CameraManager {
         );
 
         /*
-        Initial Camera Position
+        Keyframe-matched camera position.
 
-        Matches the premium hero angle from the
-        existing prototype.
+        Slightly above-centre, looking down toward the can.
+        Longer-lens compressed look (FOV 28 vs 32 previously).
         */
 
         this.camera.position.set(
 
             0,
 
-            0.25,
+            0.45,
 
-            7.5
+            7.0
 
         );
 
         /*
         Camera Target
+
+        Shifted slightly below centre so the can reads in
+        the lower-middle of the frame, matching Fig.01 and
+        Fig.02 where the can sits with breathing room above.
         */
 
         this.target = new THREE.Vector3(
 
             0,
 
-            0,
+            -0.15,
 
             0
 
@@ -73,8 +91,7 @@ export default class CameraManager {
         /*
         Mouse Influence
 
-        These values will eventually be driven
-        by MouseController.
+        These values are driven by MouseController.
         */
 
         this.mouse = {
@@ -97,19 +114,12 @@ export default class CameraManager {
         Camera Strength
 
         Small movements only.
-
-        Luxury websites should never feel like
-        a video game.
+        Luxury websites never feel like a video game.
         */
 
-        this.strength = 0.22;
+        this.strength = 0.20;
 
-        this.damping = 0.055;
-
-        /*
-        Resize
-
-        */
+        this.damping = 0.048;
 
         window.addEventListener(
 
@@ -126,17 +136,10 @@ export default class CameraManager {
     }
 
     /*=========================================================
-
         UPDATE
-
     =========================================================*/
 
     update(delta) {
-
-        /*
-        Smooth Damping
-
-        */
 
         this.current.x +=
 
@@ -151,8 +154,8 @@ export default class CameraManager {
             * this.damping;
 
         /*
-        Apply Offset
-
+        Apply Mouse Offset on top of base position.
+        Only X and Y are affected — Z stays fixed.
         */
 
         this.camera.position.x =
@@ -161,14 +164,9 @@ export default class CameraManager {
 
         this.camera.position.y =
 
-            0.25 +
+            0.45 +
 
             this.current.y * this.strength;
-
-        /*
-        Always Look Towards Centre
-
-        */
 
         this.camera.lookAt(
 
@@ -179,9 +177,7 @@ export default class CameraManager {
     }
 
     /*=========================================================
-
         Mouse Input
-
     =========================================================*/
 
     setMouse(x, y) {
@@ -193,9 +189,7 @@ export default class CameraManager {
     }
 
     /*=========================================================
-
         Resize
-
     =========================================================*/
 
     resize() {

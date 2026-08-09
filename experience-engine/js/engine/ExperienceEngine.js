@@ -5,7 +5,7 @@ EXPERIENCE ENGINE
 
 ExperienceEngine.js
 
-Version 3.0
+Version 3.1
 
 Application Controller
 
@@ -21,6 +21,22 @@ Responsibilities
 • Start Animation Loop
 • Handle Resize
 • Public API
+
+Bug Fixes (v3.1)
+
+• FIX: createRenderer() now passes the HTML canvas element
+  (#engine-canvas) to RendererManager instead of width/height
+  numbers. Three.js was silently creating its own off-screen
+  canvas and rendering to it, leaving #engine-canvas blank.
+
+• FIX: Added `is-ready` CSS class to the container after
+  build() completes. engine.css hides #engine-canvas with
+  opacity:0 until this class is present — without it the
+  canvas was invisible even when rendering correctly.
+
+• FIX: Added a scroll event listener that maps window.scrollY
+  to RevealDirector progress [0,1]. Previously onScroll()
+  existed on InteractionController but was never called.
 
 ****************************************************************/
 
@@ -49,7 +65,7 @@ export default class ExperienceEngine {
 
         console.log("=======================================");
         console.log(" Lacquer Bru Experience Engine");
-        console.log(" Version 3.0");
+        console.log(" Version 3.1");
         console.log("=======================================");
 
         this.options = options;
@@ -92,6 +108,14 @@ export default class ExperienceEngine {
 
         this.registerEvents();
 
+        /*------------------------------------------------------
+        FIX: Mark engine as ready so CSS reveals the canvas.
+        engine.css keeps #engine-canvas at opacity:0 until
+        the container receives this class.
+        ------------------------------------------------------*/
+
+        this.container.classList.add('is-ready');
+
     }
 
     /*=========================================================
@@ -130,27 +154,39 @@ export default class ExperienceEngine {
 
     /*=========================================================
         Renderer
+
+        FIX: Pass the actual #engine-canvas DOM element and the
+        already-created scene/camera to RendererManager.
+        Previously this passed (this.width, this.height) —
+        numbers — which Three.js ignored, causing it to create
+        a second, invisible canvas instead of using the one
+        declared in index.html.
     =========================================================*/
 
     createRenderer() {
 
+        const canvas =
+            this.container.querySelector('#engine-canvas');
+
         this.rendererManager =
             new RendererManager(
 
-                this.width,
+                canvas,
 
-                this.height
+                this.scene,
+
+                this.camera
 
             );
 
         this.renderer =
             this.rendererManager.renderer;
 
-        this.container.appendChild(
-
-            this.renderer.domElement
-
-        );
+        /*
+        Do NOT call this.container.appendChild(renderer.domElement)
+        here. The canvas is already in the DOM via index.html.
+        Appending again would create a second canvas on top.
+        */
 
     }
 
@@ -224,7 +260,7 @@ export default class ExperienceEngine {
 
     }
 
-        /*=========================================================
+    /*=========================================================
         Systems
     =========================================================*/
 
@@ -359,6 +395,11 @@ export default class ExperienceEngine {
 
     /*=========================================================
         EVENTS
+
+        FIX: Added scroll listener that maps window.scrollY
+        to a [0,1] progress value and forwards it to
+        InteractionController → RevealDirector.
+        Previously onScroll() existed but was never called.
     =========================================================*/
 
     registerEvents() {
@@ -370,6 +411,57 @@ export default class ExperienceEngine {
             () => this.resize()
 
         );
+
+        window.addEventListener(
+
+            "scroll",
+
+            () => {
+
+                const maxScroll =
+                    document.documentElement.scrollHeight -
+                    window.innerHeight;
+
+                if (maxScroll <= 0) return;
+
+                const progress = window.scrollY / maxScroll;
+
+                if (this.interactionController) {
+
+                    this.interactionController.onScroll(
+
+                        progress
+
+                    );
+
+                }
+
+            },
+
+            { passive: true }
+
+        );
+
+        /*------------------------------------------------------
+        BEGIN button — triggers autoplay
+        ------------------------------------------------------*/
+
+        const beginBtn =
+            this.container.querySelector('#begin-btn');
+
+        if (beginBtn) {
+
+            beginBtn.addEventListener('click', () => {
+
+                if (this.interactionController) {
+
+                    this.interactionController.onCTA();
+
+                }
+
+            });
+
+        }
 
     }
 
@@ -403,7 +495,7 @@ export default class ExperienceEngine {
 
     }
 
-        /*=========================================================
+    /*=========================================================
         PUBLIC API
     =========================================================*/
 
